@@ -255,7 +255,7 @@ def analyze_pattern_case(
     return result
 
 
-def anayze_all_patterns(data: Any) -> Tuple[List[PatternResult], str]:
+def analyze_all_patterns(data: Any) -> Tuple[List[PatternResult], str]:
     # JSON 데이터의 모든 패턴을 분석하여 결과 리스트를 반환한다.
 
     results: List[PatternResult] = []
@@ -389,7 +389,7 @@ def test():
         return
 
     # 2. 패턴 분석
-    results, error_message = anayze_all_patterns(data)
+    results, error_message = analyze_all_patterns(data)
 
     if error_message:
         print(f"분석 오류: {error_message}")
