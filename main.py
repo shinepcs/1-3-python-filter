@@ -398,9 +398,23 @@ def test():
     # 3. 분석 결과 출력
     total_count, pass_count, fail_count, failed_results = print_analysis_report(results)
 
-    print(f"total_count:{total_count}, pass_count:{pass_count}, fail_count:{fail_count}, failed_results:{failed_results}")
+    failed_result_lines = []
+    for index, failed_result in enumerate(failed_results, start= 1):
+        failed_result_lines.append(f"\n  - failed_result[{index}]")
+        failed_result_lines.extend(f"    {key}:{value}" for key, value in failed_result.items())
+
+        
+    failed_results_text = "\n".join(failed_result_lines) or "  (none)"
+    print(
+        f"total_count:{total_count}, pass_count:{pass_count}, "
+        f"fail_count:{fail_count}, failed_results:\n{failed_results_text}"
+    )
+
 
 
 # 진입점: 분석할 JSON 파일 경로
 if __name__ == "__main__":
+    from test_main import run_all_tests
+    run_all_tests()
+
     test()
