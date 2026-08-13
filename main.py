@@ -493,7 +493,8 @@ def print_matrix(title: str, matrix: Matrix) -> None:
     
 
 def run_user_input_mode(repeat_count:int = DEFAULT_REPEAT_COUNT) -> None:
-    print("""\n#----------
+    print("""\n
+    #----------
     # [1] 필터 입력
     # ----------""")
 
@@ -505,16 +506,18 @@ def run_user_input_mode(repeat_count:int = DEFAULT_REPEAT_COUNT) -> None:
     print_matrix("필터 A", filter_a)
     print_matrix("필터 B", filter_b)
 
-    print("""\n#----------
-     # [2] 패턴 입력
-     # #----------""")
+    print("""\n
+    #----------
+    # [2] 패턴 입력
+    # #----------""")
 
     pattern: Matrix = read_matrix("패턴", 3)
     score_a: float = mac_score(pattern, filter_a)
     score_b: float = mac_score(pattern, filter_b)
     decision: str = classify_filter_a_b(score_a, score_b)
 
-    print(f"""\n#----------
+    print(f"""\n
+    #----------
     # [3] MAC 결과
     # ----------
     # A 점수: {score_a:.16f}
@@ -536,7 +539,8 @@ def print_performance_report(
         results: List[PerformanceResult], 
         repeat_count: int = DEFAULT_REPEAT_COUNT,
         section_number: int = 3) -> None:
-    print(f"""\n#----------
+    print(f"""\n
+    #----------
     # [{section_number}] 성능 분석 (평균/{repeat_count}회)
     #----------""")
     print(
@@ -559,7 +563,8 @@ def print_performance_report(
     
 def select_mode() -> str:
     while True:
-        print("""\n[모드 선택]
+        print("""\n
+        [모드 선택]
         1. 사용자 입력 (3x3)
         2. data.json 분석""")
 
@@ -739,7 +744,8 @@ def print_result_summary(
         fail_count: int,
         failed_results: List[PatternResult]
 ) -> None:
-    print(f"""\n----------
+    print(f"""\n
+    # ----------
     # [4] 결과 요약
     # ----------
     총 테스트: {total_count}
@@ -759,41 +765,6 @@ def print_result_summary(
             print(f"- {case_id}: {reason}")
     else:
         print("\n모든 테스트가 통과했습니다.")
-
-
-def test():
-    project_dir = Path(__file__).resolve().parent
-    json_file_path: str = str(project_dir / "data.json")
-
-    # 1. JSON 파일 읽기
-    data, error_message = load_json(json_file_path)
-
-    if data is None:
-        print(f"오류: {error_message}")
-        return
-
-    # 2. 패턴 분석
-    results, error_message = analyze_all_patterns(data)
-
-    if error_message:
-        print(f"분석 오류: {error_message}")
-        return
-
-    # 3. 분석 결과 출력
-    total_count, pass_count, fail_count, failed_results = print_pattern_results(results)
-
-    failed_result_lines = []
-    for index, failed_result in enumerate(failed_results, start= 1):
-        failed_result_lines.append(f"\n  - failed_result[{index}]")
-        failed_result_lines.extend(f"    {key}:{value}" for key, value in failed_result.items())
-
-        
-    failed_results_text = "\n".join(failed_result_lines) or "  (none)"
-    print(
-        f"total_count:{total_count}, pass_count:{pass_count}, "
-        f"fail_count:{fail_count}, failed_results:\n{failed_results_text}"
-    )
-
 
 
 # 진입점: 분석할 JSON 파일 경로
