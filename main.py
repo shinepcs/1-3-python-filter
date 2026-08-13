@@ -376,6 +376,91 @@ def print_analysis_report(results:List[PatternResult]
 
     return (total_count, pass_count, fail_count, failed_results)
 
+def read_matrix(title:str, size : int = 3) -> Matrix:
+    if not isinstance(title, str):
+        raise TypeError("title은 문자열이어야 합니다.")
+
+    if isinstance(size, bool) or not isinstance(size, int) or size <= 0:
+        raise ValueError("size는 양의 정수여야 합니다.")
+
+    matrix: Matrix = []
+
+    print(f"\n{title}({size})줄 이력, 각 줄은 공백으로 구분")
+
+    row_index:int = 0
+    while row_index < size:
+        raw_line:str = input(f"{row_index + 1}행: ").strip()
+        tokens: List[str] = raw_line.split()
+
+        if len(tokens) != size:
+            print(f"입력 형식 오류: 각 줄에 {size}개의 숫자를 공백으로 구분해 입력하세요.")
+            continue
+
+        try:
+            row: List[Number] = [float(token) for token in tokens]
+        except ValueError:
+            print("입력 형식 오류: 숫자로 변환할 수 없는 값이 있습니다.")
+            continue
+
+        matrix.append(row)
+        row_index += 1
+
+    return matrix
+
+def claasify_filter_a_b(score_a:float, score_b:float, epsilon:float =EPSILON) -> str:
+    if abs(score_a - score_b) < epsilon:
+        return "UNDECIDED"
+    if score_a > score_b: 
+        return "A"
+    return "B"
+
+DEFAULT_REPEAT_COUNT:int = 10
+def measure_average_mac_time(pattern:Matrix, filters:List[Matrix],
+                             repeat_count:int = DEFAULT_REPEAT_COUNT) ->float:
+    if (isinstance(repeat_count, bool) or not isinstance(repeat_count, int)
+        or repeat_count < 10):
+        raise ValueError("repeat_count는 10 이상의 정수여야 합니다.")
+
+    if len(pattern) == 0:
+        raise ValueError("패턴이 비어 있습니다.")
+
+    size:int = len(pattern)
+
+    is_valid, error_message = validate_matrix(pattern, size)
+
+    if not is_valid:
+        raise ValueError(f"패턴 검증 실패:{error_message}")
+
+    if (not isinstance(filters, list) or len(filters) == 0):
+        raise ValueError("측정할 필터가 하나 이상 필요합니다.")
+
+    for filter_index, filter_data in enumerate(filters):
+        is_valid, error_message = validate_matrix(filter_data, size)
+
+        if not is_valid:
+            raise ValueError(f"{filter_index + 1} 번째 필터 검증실패:{error_message}")
+
+    
+    # 최초 실행에 의한 영향을 줄이기 위한 준비 실행
+    for filter_data in filters:
+        mac_score(pattern, filter_data)
+
+    start_ns:int = time.perf_counter_ns()
+
+    for _ in range(repeat_count):
+        for filter_data in filters:
+            mac_score(pattern, filter_data)
+
+    end_ns: int = time.perf_counter_ns()
+
+    total_call_count: int = ( repeat_count * len(filters))
+
+    average_ms: float = ((end_ns - start_ns) / total_call_count / 1_000_000)
+    return average_ms
+
+
+
+
 
 def test():
     project_dir = Path(__file__).resolve().parent
