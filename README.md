@@ -73,14 +73,24 @@ Python의 반복문만 사용해 입력 패턴과 필터 사이의 MAC(Multiply-
 
 ## 3. 프로젝트 파일 구성
 
-제출할 때 파일명을 다음과 같이 구성합니다.
+기능별 파일 구성은 다음과 같습니다.
 
 ```text
 project/
-├── main.py
+├── main.py             # 실행 진입점 및 기존 공개 API
+├── models.py           # 공통 타입 별칭
+├── matrix_core.py      # 행렬 검증, MAC 계산, 점수 판정
+├── json_analysis.py    # JSON 로드, 검증, 패턴 분석
+├── performance.py      # 성능 측정 및 벤치마크 구성
+├── console_ui.py       # 콘솔 입력과 결과 출력
+├── modes.py            # 사용자 입력/JSON 실행 흐름
+├── test_main.py
 ├── data.json
 └── README.md
 ```
+
+`main.py`는 실행 흐름만 시작하고 실제 기능은 각 모듈에 위임합니다. 기존처럼
+`main`에서 핵심 함수를 가져오는 코드도 계속 동작합니다.
 
 `data.json`은 `main.py`와 같은 디렉터리에 두어야 합니다. 프로그램은 실행 중인 터미널의 현재 위치가 아니라 `main.py`가 위치한 디렉터리를 기준으로 `data.json`을 찾습니다.
 
