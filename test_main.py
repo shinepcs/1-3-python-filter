@@ -5,7 +5,7 @@ from main import (
     extract_pattern_size,
     load_json,
     mac_score,
-    normalize_lable,
+    normalize_label,
     validate_matrix
 )
 
@@ -26,12 +26,12 @@ def test_mac_score() -> None:
     print("mac_score 테스트 통과")
 
 def test_normalize_label() -> None:
-    assert normalize_lable("+") == "Cross"
-    assert normalize_lable("cross") == "Cross"
-    assert normalize_lable("Cross") == "Cross"
-    assert normalize_lable(" x ") == "X"
-    assert normalize_lable("triangle") is None
-    print("normalize_lable 테스트 통과")
+    assert normalize_label("+") == "Cross"
+    assert normalize_label("cross") == "Cross"
+    assert normalize_label("Cross") == "Cross"
+    assert normalize_label(" x ") == "X"
+    assert normalize_label("triangle") is None
+    print("normalize_label 테스트 통과")
 
 def test_classify() -> None:
     assert classify(5.0, 1.0) == "Cross"
